@@ -21,14 +21,14 @@ public class Day
         }
 
 
-        System.out.println("On " + date + " the day was: " + days[ZellerAlgorithm(date)]);
+        System.out.println("On " + dateFormat(date) + " the day was: " + days[ZellerAlgorithm(date)]);
 
 
     }
 
     public static String askDate()
     {
-        System.out.println("Give the date using DD/MM/YYYY format");
+        System.out.println("Give the date using DD/MM/YYYY format. Please don't use '.' or '/' to separate parts of the date");
         Scanner sc = new Scanner(System.in);
         String date = sc.nextLine();
         return date;
@@ -36,34 +36,25 @@ public class Day
 
     public static int ZellerAlgorithm(String date)
     {
-        //TODO: FIX THIS!!! YOU CANNOT CONVERT INTO INT USING CHARAT FUNCTION. PLEASE CHECK FOR THE PROPER FUNCTION
         //Saving the parts of the date for Zeller's algorithm
-        int day = date.charAt(0) + date.charAt(1);
-        int month = date.charAt(2) + date.charAt(3);
-        int yearTwoFirst = date.charAt(4) + date.charAt(5);
-        int yearTwoLast = date.charAt(6) + date.charAt(7);
+        String d = String.valueOf(date.charAt(0) + String.valueOf(date.charAt(1)));
+        String m = String.valueOf(date.charAt(2) + String.valueOf(date.charAt(3)));
+        String y1 = String.valueOf(date.charAt(4) + String.valueOf(date.charAt(5)));
+        String y2 = String.valueOf(date.charAt(6) + String.valueOf(date.charAt(7)));
 
-        System.out.println(day + " " + month + " " + yearTwoFirst + " " + yearTwoLast);
-
-       /* //Here we check if the first digit of the date is '0'
-        if(Integer.parseInt(Integer.toString(day).substring(0, 1)) == 0)
-        {
-            day = Integer.parseInt(Integer.toString(day).substring(0, 2));
-        }
-
-
-        //Here we check if the first digit of the month is '0'
-        if(Integer.parseInt(Integer.toString(month).substring(0, 1)) == 0)
-        {
-            day = Integer.parseInt(Integer.toString(month).substring(0, 2));
-        }*/
-
+        int day = Integer.parseInt(d);
+        int month = Integer.parseInt(m);
+        int yearTwoFirst = Integer.parseInt(y1);
+        int yearTwoLast = Integer.parseInt(y2);
+        
+        //Zeller's algorithm counts january and february as 13th and 14th month of the previous year
        if(month == 1)
            month = 13;
 
        if(month == 2)
            month = 14;
 
+       //This is the Zeller's congruence. For more information visit: https://en.wikipedia.org/wiki/Zeller%27s_congruence
         int dateIndex = (
                 (day + ((((month+1)*26))/10)
                 + yearTwoLast
@@ -72,6 +63,22 @@ public class Day
                 - 2*yearTwoFirst)%7
                         );
 
-        return dateIndex;
+        //For some reason when the month is either january or february the dateIndex variable
+        //seems to be one (1) too high. This if-clause is used to fix the issue for the time being
+        if (month == 13 || month == 14)
+            dateIndex = dateIndex - 1;
+
+       return dateIndex;
+
+    }
+
+    public static String dateFormat(String date)
+    {
+        String d = String.valueOf(date.charAt(0) + String.valueOf(date.charAt(1)));
+        String m = String.valueOf(date.charAt(2) + String.valueOf(date.charAt(3)));
+        String y1 = String.valueOf(date.charAt(4) + String.valueOf(date.charAt(5)));
+        String y2 = String.valueOf(date.charAt(6) + String.valueOf(date.charAt(7)));
+
+        return d + "." + m + "." + y1 + y2;
     }
 }
